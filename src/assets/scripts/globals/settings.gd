@@ -77,4 +77,5 @@ func _save_game():
 	data.vsync = vsync
 	data.music_vol = music_vol
 	data.sfx_vol = sfx_vol
+	data.mouse_sensitivity = mouse_sensitivity
 	ResourceSaver.save(data, "user://data.res")

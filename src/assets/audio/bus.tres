@@ -1,4 +1,24 @@
-[gd_resource type="AudioBusLayout" format=3 uid="uid://cxm5q5xewt0xu"]
+[gd_resource type="AudioBusLayout" load_steps=5 format=3 uid="uid://cxm5q5xewt0xu"]
+
+[sub_resource type="AudioEffectEQ10" id="AudioEffectEQ10_radio01"]
+resource_name = "RadioEQ"
+
+[sub_resource type="AudioEffectDistortion" id="AudioEffectDistortion_radio01"]
+resource_name = "RadioDistortion"
+mode = 1
+pre_gain = 6.0
+keep_hf_hz = 3500.0
+drive = 0.18
+post_gain = -2.0
+
+[sub_resource type="AudioEffectAmplify" id="AudioEffectAmplify_radio01"]
+resource_name = "RadioBoost"
+volume_db = 6.0
+
+[sub_resource type="AudioEffectLimiter" id="AudioEffectLimiter_radio01"]
+resource_name = "RadioLimiter"
+ceiling_db = -4.0
+threshold_db = -8.0
 
 [resource]
 bus/1/name = &"Music"
@@ -13,3 +33,23 @@ bus/2/mute = false
 bus/2/bypass_fx = false
 bus/2/volume_db = 0.0
 bus/2/send = &"Master"
+bus/3/name = &"Radio"
+bus/3/solo = false
+bus/3/mute = false
+bus/3/bypass_fx = false
+bus/3/volume_db = 2.0
+bus/3/send = &"Master"
+bus/3/effect/0/effect = SubResource("AudioEffectEQ10_radio01")
+bus/3/effect/0/enabled = true
+bus/3/effect/1/effect = SubResource("AudioEffectDistortion_radio01")
+bus/3/effect/1/enabled = true
+bus/3/effect/2/effect = SubResource("AudioEffectAmplify_radio01")
+bus/3/effect/2/enabled = true
+bus/3/effect/3/effect = SubResource("AudioEffectLimiter_radio01")
+bus/3/effect/3/enabled = true
+bus/4/name = &"_Record"
+bus/4/solo = false
+bus/4/mute = true
+bus/4/bypass_fx = false
+bus/4/volume_db = 0.0
+bus/4/send = &"Master"

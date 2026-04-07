@@ -147,6 +147,22 @@ theme_override_colors/font_color = Color(0.829817, 0.978527, 0.822901, 1)
 disabled = true
 text = "  START  "
 
+[node name="PttHint" type="Label" parent="Panel"]
+layout_mode = 1
+anchors_preset = 4
+anchor_left = 0.0
+anchor_top = 1.0
+anchor_right = 0.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = -32.0
+offset_right = 400.0
+offset_bottom = -8.0
+grow_vertical = 0
+theme = ExtResource("2_rvpx7")
+theme_override_font_sizes/font_size = 16
+text = "[ V ] Segurar para falar"
+
 [node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
 layout_mode = 1
 offset_left = 648.0

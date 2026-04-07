@@ -1,5 +1,4 @@
 extends CanvasLayer
-class_name MainMenu
 
 @onready var state_chart : StateChart = $StateChart
 @onready var error_text : RichTextLabel = $Error/RichTextLabel
@@ -13,7 +12,7 @@ var lan = false
 
 func _ready() -> void:
 	GameManager.main_menu = self
-	Steam.join_requested.connect(_on_lobby_join_requested)
+	# Steam.join_requested já conectado em NetworkManager._ready() — não duplicar aqui
 	NetworkManager.display_error.connect(_display_error)
 	_setup_buttons()
 	_setup_state_chart()
@@ -75,7 +74,7 @@ func _connect_state_signals(
 	state_node.state_exited.connect(func(): target_node.hide())
 
 func _play_sound(sound: AudioStream) -> void:
-	sfx.steam = sound
+	sfx.stream = sound
 	sfx.play()
 
 func _on_lobby_type(_lan : bool) -> void:

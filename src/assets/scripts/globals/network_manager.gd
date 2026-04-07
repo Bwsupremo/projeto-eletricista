@@ -27,7 +27,8 @@ func _connection_failed() -> void:
 
 func _peer_disconnected(id: int) -> void:
 	if id == 1:
-		_leave_lobby()
+		# Host desconectou — retorna ao menu de qualquer estado
+		_force_return_to_menu()
 	else:
 		players.erase(id)
 		players_changed.emit()
@@ -43,7 +44,7 @@ func _connected_to_server() -> void:
 		players[id] = {"name": my_name, "id": Steam.getSteamID()}
 		sync_info.rpc(players[id]["name"], players[id]["id"])
 
-@rpc
+@rpc("any_peer", "call_local", "reliable")
 func _receive_player_data(data : Dictionary, id:int) -> void:
 	players = data
 	if id == multiplayer.get_unique_id():
@@ -123,8 +124,36 @@ func _transition_to_lobby() -> void:
 	GameManager.main.remove_child(GameManager.main_menu)
 	GameManager.main_menu.queue_free()
 	GameManager.main.add_child(GameManager.create_lobby())
+	VoipManager.activate()
+
+func _transition_to_briefing() -> void:
+	await get_tree().process_frame
+	GameManager.main.remove_child(GameManager.lobby)
+	GameManager.lobby.queue_free()
+	GameManager.main.add_child(GameManager.create_briefing())
+
+func _transition_to_game() -> void:
+	await get_tree().process_frame
+	GameManager.main.remove_child(GameManager.briefing)
+	GameManager.briefing.queue_free()
+	GameManager.main.add_child(GameManager.create_game())
+
+func _transition_to_result(success: bool = false, score: int = 0) -> void:
+	await get_tree().process_frame
+	GameManager.main.remove_child(GameManager.game)
+	GameManager.game.queue_free()
+	var result_scene := GameManager.create_result()
+	GameManager.main.add_child(result_scene)
+	result_scene.set_result(success, score)
+
+func _transition_to_lobby_from_result() -> void:
+	await get_tree().process_frame
+	GameManager.main.remove_child(GameManager.result)
+	GameManager.result.queue_free()
+	GameManager.main.add_child(GameManager.create_lobby())
 
 func _leave_lobby() -> void:
+	VoipManager.deactivate()
 	GameManager.main.remove_child(GameManager.lobby)
 	GameManager.lobby.queue_free()
 	GameManager.main.add_child(GameManager.create_main_menu())
@@ -132,6 +161,42 @@ func _leave_lobby() -> void:
 	if !lan:
 		Steam.leaveLobby(lobby_id)
 	multiplayer.multiplayer_peer.close()
+	players.clear()
+
+func _leave_from_result() -> void:
+	VoipManager.deactivate()
+	GameManager.main.remove_child(GameManager.result)
+	GameManager.result.queue_free()
+	GameManager.main.add_child(GameManager.create_main_menu())
+	GameManager.main_menu.enter()
+	if !lan:
+		Steam.leaveLobby(lobby_id)
+	multiplayer.multiplayer_peer.close()
+	players.clear()
+
+# Retorna ao menu principal independente de qual cena está ativa.
+# Usado quando o host desconecta de forma inesperada em qualquer estado do jogo.
+func _force_return_to_menu() -> void:
+	VoipManager.deactivate()
+	# Remove a cena ativa atual (qualquer que seja)
+	var scenes_to_check : Array = [
+		GameManager.lobby,
+		GameManager.briefing,
+		GameManager.game,
+		GameManager.result,
+	]
+	for scene in scenes_to_check:
+		if is_instance_valid(scene) and scene.get_parent() == GameManager.main:
+			GameManager.main.remove_child(scene)
+			scene.queue_free()
+			break
+	# Recoloca o menu principal
+	GameManager.main.add_child(GameManager.create_main_menu())
+	GameManager.main_menu.enter()
+	if !lan:
+		Steam.leaveLobby(lobby_id)
+	if multiplayer.multiplayer_peer:
+		multiplayer.multiplayer_peer.close()
 	players.clear()
 
 func _on_join_lan() -> void:
@@ -170,4 +235,3 @@ func check_command_line() -> void:
 func _on_lobby_join_requested(this_lobby_id: int, _friend_id: int) -> void:
 	lan = false
 	Steam.joinLobby(int(this_lobby_id))
-

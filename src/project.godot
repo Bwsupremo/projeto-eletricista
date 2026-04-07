@@ -10,27 +10,33 @@ config_version=5
 
 [application]
 
-config/name="SteamGodotTemplate"
-config/description="A project template using the Expresso Bits SteamMultiplayerPeer addon and the Gramps GodotSteam addon.
-It contains boilerplate code for a main menu with saved settings, LAN and Steam netcode, a simple audio bus for music and sfx.
-Main menu UI is controlled by a theme resource in assets/misc. UI work with mouse keyboard or controller."
+config/name="Fio Pelado"
+config/description="Jogo cooperativo de eletricista para até 4 jogadores. Baseado em GodotSteam com lobby Steam, VoIP Opus e fluxo Menu → Lobby → Briefing → Gameplay → Resultado."
 run/main_scene="res://assets/scenes/main.tscn"
-config/features=PackedStringArray("4.5", "Forward Plus")
+config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
 
 [audio]
 
 buses/default_bus_layout="res://assets/audio/bus.tres"
+driver/enable_input=true
 
 [autoload]
 
 NetworkManager="*res://assets/scripts/globals/network_manager.gd"
 GameManager="*res://assets/scripts/globals/game_manager.gd"
 Settings="*res://assets/scripts/globals/settings.gd"
+VoipManager="*res://assets/scenes/voip/voip_manager.tscn"
+AppConfig="*res://addons/maaacks_game_template/base/nodes/autoloads/app_config/app_config.tscn"
+SceneLoader="*res://addons/maaacks_game_template/base/nodes/autoloads/scene_loader/scene_loader.tscn"
 
 [display]
 
 window/stretch/mode="canvas_items"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/maaacks_game_template/plugin.cfg")
 
 [input]
 
@@ -46,6 +52,11 @@ ui_cancel={
 "deadzone": 0.5,
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":4194305,"physical_keycode":0,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
 , Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"button_index":1,"pressure":0.0,"pressed":true,"script":null)
+]
+}
+speak={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":86,"key_label":0,"unicode":118,"location":0,"echo":false,"script":null)
 ]
 }
 start={
@@ -95,8 +106,19 @@ attack={
 ]
 }
 
+[internationalization]
+
+locale/translations=PackedStringArray("res://addons/maaacks_game_template/base/translations/menus_translations.en.translation", "res://addons/maaacks_game_template/base/translations/menus_translations.fr.translation")
+
+[maaacks_game_template]
+
+disable_install_audio_busses=true
+disable_update_check=false
+disable_install_wizard=true
+
 [steam]
 
 initialization/app_id=0
 initialization/initialize_on_startup=false
 initialization/embed_callbacks=false
+multiplayer_peer/max_channels=4

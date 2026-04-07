@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://bfiop0receiver1"]
+
+[ext_resource type="Script" path="res://assets/scripts/voip/voip_receiver.gd" id="1_recv"]
+
+; O stream é definido em runtime pelo VoipManager quando twovoip está disponível.
+; Não usamos AudioStreamOpusChunked aqui para evitar erro de parser se twovoip não carregar.
+[node name="VoipReceiver" type="AudioStreamPlayer"]
+volume_db = 0.0
+autoplay = false
+bus = &"Radio"
+script = ExtResource("1_recv")

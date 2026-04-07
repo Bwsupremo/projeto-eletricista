@@ -9,9 +9,23 @@ func _ready() -> void:
 	$Panel/Exit.pressed.connect(NetworkManager._leave_lobby)
 	$Panel/Ready.pressed.connect(_on_ready)
 	$Panel/Start.pressed.connect(_on_start)
+	VoipManager.started_speaking.connect(_on_started_speaking)
+	VoipManager.stopped_speaking.connect(_on_stopped_speaking)
+
+func _exit_tree() -> void:
+	if VoipManager.started_speaking.is_connected(_on_started_speaking):
+		VoipManager.started_speaking.disconnect(_on_started_speaking)
+	if VoipManager.stopped_speaking.is_connected(_on_stopped_speaking):
+		VoipManager.stopped_speaking.disconnect(_on_stopped_speaking)
 
 func _on_start() -> void:
-	print('starting game on line 14 of lobby.gd')
+	if not multiplayer.is_server():
+		return
+	_start_briefing.rpc()
+
+@rpc("authority", "call_local", "reliable")
+func _start_briefing() -> void:
+	NetworkManager._transition_to_briefing()
 
 func _add_row(name_ : String, id: int) -> void:
 	var instance : HBoxContainer = row.instantiate()
@@ -56,3 +70,20 @@ func _on_ready_remote(_is_ready_remote : bool) -> void:
 				$Panel/Start.disabled = true
 				return
 		$Panel/Start.disabled = false
+
+# --- VoIP: indicadores de fala ---
+
+func _on_started_speaking(peer_id: int) -> void:
+	_set_speaking_indicator(peer_id, true)
+
+func _on_stopped_speaking(peer_id: int) -> void:
+	_set_speaking_indicator(peer_id, false)
+
+func _set_speaking_indicator(peer_id: int, speaking: bool) -> void:
+	if not NetworkManager.players.has(peer_id):
+		return
+	var player_data : Dictionary = NetworkManager.players[peer_id]
+	var row_node = player_data.get("object")
+	if not is_instance_valid(row_node):
+		return
+	row_node.get_node("Speaking").visible = speaking

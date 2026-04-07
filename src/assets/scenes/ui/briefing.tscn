@@ -1,0 +1,72 @@
+[gd_scene load_steps=3 format=3 uid="uid://bfiop0briefing1"]
+
+[ext_resource type="Script" path="res://assets/scripts/ui/briefing.gd" id="1_brief"]
+[ext_resource type="Theme" uid="uid://d23flwkfyegxj" path="res://assets/misc/main_menu.tres" id="2_theme"]
+
+[node name="Briefing" type="CanvasLayer"]
+follow_viewport_enabled = true
+script = ExtResource("1_brief")
+
+[node name="Panel" type="Panel" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_theme")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -220.0
+offset_right = 400.0
+offset_bottom = 140.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_theme")
+
+[node name="TitleLabel" type="Label" parent="Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("2_theme")
+theme_override_font_sizes/font_size = 48
+text = "BRIEFING"
+horizontal_alignment = 1
+
+[node name="DescriptionLabel" type="Label" parent="Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("2_theme")
+theme_override_font_sizes/font_size = 20
+text = "Missão: Restaurar a energia do edifício.\nCoopere com sua equipe para resolver os circuitos elétricos."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="CountdownLabel" type="Label" parent="Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("2_theme")
+theme_override_font_sizes/font_size = 36
+text = "Aguardando host..."
+horizontal_alignment = 1
+
+[node name="StartButton" type="Button" parent="Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -120.0
+offset_top = 160.0
+offset_right = 120.0
+offset_bottom = 195.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_theme")
+text = "  INICIAR AGORA  "
